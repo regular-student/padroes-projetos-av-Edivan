@@ -1,0 +1,189 @@
+@startuml
+
+interface ProvedorNuvemFactory {
+    + criarMaquinaVirtual(sequencial: int): MaquinaVirtual
+    + criarArmazenamento(sequencial: int, capacidadeGB: double): Armazenamento
+    + criarFila(sequencial: int): Fila
+    + getNomeProvedor(): String
+    + calcularCustoEstimado(qtdMaquinas: int, gbArmazenamento: double): double
+}
+
+class AwsFactory {
+    + criarMaquinaVirtual(sequencial: int): MaquinaVirtual
+    + criarArmazenamento(sequencial: int, capacidadeGB: double): Armazenamento
+    + criarFila(sequencial: int): Fila
+    + getNomeProvedor(): String
+    + calcularCustoEstimado(qtdMaquinas: int, gbArmazenamento: double): double
+}
+
+class AzureFactory {
+    + criarMaquinaVirtual(sequencial: int): MaquinaVirtual
+    + criarArmazenamento(sequencial: int, capacidadeGB: double): Armazenamento
+    + criarFila(sequencial: int): Fila
+    + getNomeProvedor(): String
+    + calcularCustoEstimado(qtdMaquinas: int, gbArmazenamento: double): double
+}
+
+interface MaquinaVirtual {
+    + getId(): String
+    + getCustoPorHora(): double
+}
+
+class AwsMaquinaVirtual {
+    - id: String
+    - custoPorHora: double
+    + getId(): String
+    + getCustoPorHora(): double
+}
+
+class AzureMaquinaVirtual {
+    - id: String
+    - custoPorHora: double
+    + getId(): String
+    + getCustoPorHora(): double
+}
+
+interface Armazenamento {
+    + getId(): String
+    + getCapacidadeGB(): double
+    + getCustoPorGB(): double
+}
+
+class AwsArmazenamento {
+    - id: String
+    - capacidadeGB: double
+    - custoPorGB: double
+    + getId(): String
+    + getCapacidadeGB(): double
+    + getCustoPorGB(): double
+}
+
+class AzureArmazenamento {
+    - id: String
+    - capacidadeGB: double
+    - custoPorGB: double
+    + getId(): String
+    + getCapacidadeGB(): double
+    + getCustoPorGB(): double
+}
+
+interface Fila {
+    + getId(): String
+    + getCustoFixo(): double
+}
+
+class AwsFila {
+    - id: String
+    - custoFixo: double
+    + getId(): String
+    + getCustoFixo(): double
+}
+
+class AzureFila {
+    - id: String
+    - custoFixo: double
+    + getId(): String
+    + getCustoFixo(): double
+}
+
+class Configuracao {
+    - {static} instancia: Configuracao
+    - regiaoPadrao: String
+    - orcamentoMaximo: double
+    - Configuracao()
+    + {static} getInstance(): Configuracao
+    + getRegiaoPadrao(): String
+    + getOrcamentoMaximo(): double
+}
+
+class HistoricoAuditoria {
+    - {static} instancia: HistoricoAuditoria
+    - HistoricoAuditoria()
+    + {static} getInstance(): HistoricoAuditoria
+    + registrar(registro: RegistroAuditoria): void
+    + imprimirHistorico(): void
+}
+
+class RegistroAuditoria {
+    - dataHora: LocalDateTime
+    - nomeAmbiente: String
+    - provedor: String
+    - resultado: String
+    - motivo: String
+    + formatar(): String
+}
+
+class SolicitacaoAmbiente {
+    - nomeAmbiente: String
+    - provedor: String
+    - qtdMaquinas: int
+    - gbArmazenamento: double
+    + getNomeAmbiente(): String
+    + getProvedor(): String
+    + getQtdMaquinas(): int
+    + getGbArmazenamento(): double
+}
+
+class Ambiente {
+    - nome: String
+    - provedor: String
+    - regiao: String
+    - custoTotalEstimado: double
+    + imprimirResumo(): void
+    + getCustoTotalEstimado(): double
+}
+
+class MontadorAmbiente {
+    + MontadorAmbiente(factory: ProvedorNuvemFactory)
+    + montarAmbiente(solicitacao: SolicitacaoAmbiente): Ambiente
+}
+
+class Main {
+    + {static} main(args: String[]): void
+}
+
+AwsFactory ..|> ProvedorNuvemFactory
+AzureFactory ..|> ProvedorNuvemFactory
+
+AwsMaquinaVirtual ..|> MaquinaVirtual
+AzureMaquinaVirtual ..|> MaquinaVirtual
+
+AwsArmazenamento ..|> Armazenamento
+AzureArmazenamento ..|> Armazenamento
+
+AwsFila ..|> Fila
+AzureFila ..|> Fila
+
+ProvedorNuvemFactory ..> MaquinaVirtual : <<uses>>
+ProvedorNuvemFactory ..> Armazenamento : <<uses>>
+ProvedorNuvemFactory ..> Fila : <<uses>>
+
+AwsFactory ..> AwsMaquinaVirtual : <<creates>>
+AwsFactory ..> AwsArmazenamento : <<creates>>
+AwsFactory ..> AwsFila : <<creates>>
+
+AzureFactory ..> AzureMaquinaVirtual : <<creates>>
+AzureFactory ..> AzureArmazenamento : <<creates>>
+AzureFactory ..> AzureFila : <<creates>>
+
+MontadorAmbiente --> ProvedorNuvemFactory
+MontadorAmbiente ..> SolicitacaoAmbiente : <<uses>>
+MontadorAmbiente ..> Ambiente : <<creates>>
+MontadorAmbiente ..> Configuracao : <<uses>>
+MontadorAmbiente ..> HistoricoAuditoria : <<uses>>
+MontadorAmbiente ..> RegistroAuditoria : <<creates>>
+
+Ambiente --> "*" MaquinaVirtual
+Ambiente --> Armazenamento
+Ambiente --> Fila
+
+HistoricoAuditoria --> "*" RegistroAuditoria
+
+Main ..> MontadorAmbiente : <<uses>>
+Main ..> SolicitacaoAmbiente : <<creates>>
+Main ..> AwsFactory : <<creates>>
+Main ..> AzureFactory : <<creates>>
+Main ..> ProvedorNuvemFactory : <<uses>>
+Main ..> HistoricoAuditoria : <<uses>>
+
+@enduml
