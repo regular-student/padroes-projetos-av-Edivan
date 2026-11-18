@@ -1,0 +1,177 @@
+@startuml
+
+interface Interessado {
+    + notificarLance(nomeLote: String, lance: Lance): void
+}
+
+class Participante {
+    - id: String
+    - nome: String
+    + notificarLance(nomeLote: String, lance: Lance): void
+    + getId(): String
+    + getNome(): String
+}
+
+class PainelLeiloeiro {
+    - maiorLance: double
+    - totalLances: int
+    + notificarLance(nomeLote: String, lance: Lance): void
+    + getMaiorLance(): double
+    + getTotalLances(): int
+}
+
+class AuditorLeilao {
+    - registros: List<String>
+    + notificarLance(nomeLote: String, lance: Lance): void
+    + imprimirAuditoria(): void
+}
+
+interface RegraComissao {
+    + calcularComissao(valorVenda: double): double
+    + getNomeRegra(): String
+}
+
+class ComissaoArte {
+    + calcularComissao(valorVenda: double): double
+    + getNomeRegra(): String
+}
+
+class ComissaoVeiculos {
+    + calcularComissao(valorVenda: double): double
+    + getNomeRegra(): String
+}
+
+class ComissaoImoveis {
+    + calcularComissao(valorVenda: double): double
+    + getNomeRegra(): String
+}
+
+class ComissaoEletronicos {
+    + calcularComissao(valorVenda: double): double
+    + getNomeRegra(): String
+}
+
+interface ItemFatura {
+    + getDescricao(): String
+    + getCusto(): double
+    + getValorTotal(): double
+    + imprimirLinhas(): void
+    + imprimirFatura(): void
+}
+
+class VendaLote {
+    - nomeLote: String
+    - valorVenda: double
+    + getDescricao(): String
+    + getCusto(): double
+    + getValorTotal(): double
+    + imprimirLinhas(): void
+    + imprimirFatura(): void
+}
+
+abstract class ServicoDecorator {
+    + ServicoDecorator(itemDecorado: ItemFatura)
+    + getValorTotal(): double
+    + imprimirLinhas(): void
+    + imprimirFatura(): void
+}
+
+class SeguroTransporteDecorator {
+    - valorVenda: double
+    + SeguroTransporteDecorator(itemDecorado: ItemFatura, valorVenda: double)
+    + getDescricao(): String
+    + getCusto(): double
+}
+
+class CertificadoAutenticidadeDecorator {
+    + CertificadoAutenticidadeDecorator(itemDecorado: ItemFatura)
+    + getDescricao(): String
+    + getCusto(): double
+}
+
+class EmbalagemEspecialDecorator {
+    + EmbalagemEspecialDecorator(itemDecorado: ItemFatura)
+    + getDescricao(): String
+    + getCusto(): double
+}
+
+class EntregaExpressaDecorator {
+    + EntregaExpressaDecorator(itemDecorado: ItemFatura)
+    + getDescricao(): String
+    + getCusto(): double
+}
+
+class Lote {
+    - id: int
+    - nome: String
+    - categoria: String
+    - precoInicial: double
+    - precoReserva: double
+    - aberto: boolean
+    - valorAtual: double
+    + receberLance(lance: Lance): boolean
+    + adicionarInteressado(interessado: Interessado): void
+    + removerInteressado(interessado: Interessado): void
+    + setRegraComissao(regra: RegraComissao): void
+    + calcularComissao(): double
+    + encerrar(): boolean
+    + getNome(): String
+    + getValorAtual(): double
+    + getLanceVencedor(): Lance
+    + isAberto(): boolean
+}
+
+class Lance {
+    - valor: double
+    - dataHora: LocalDateTime
+    + getValor(): double
+    + getParticipante(): Participante
+    + getDataHora(): LocalDateTime
+    + getDataHoraFormatada(): String
+}
+
+class AcertoVendedor {
+    + {static} imprimirAcerto(nomeLote: String, valorVenda: double, comissao: double): void
+}
+
+class Main {
+    + {static} main(args: String[]): void
+}
+
+Participante ..|> Interessado
+PainelLeiloeiro ..|> Interessado
+AuditorLeilao ..|> Interessado
+
+ComissaoArte ..|> RegraComissao
+ComissaoVeiculos ..|> RegraComissao
+ComissaoImoveis ..|> RegraComissao
+ComissaoEletronicos ..|> RegraComissao
+
+VendaLote ..|> ItemFatura
+ServicoDecorator ..|> ItemFatura
+SeguroTransporteDecorator --|> ServicoDecorator
+CertificadoAutenticidadeDecorator --|> ServicoDecorator
+EmbalagemEspecialDecorator --|> ServicoDecorator
+EntregaExpressaDecorator --|> ServicoDecorator
+
+ServicoDecorator o--> ItemFatura
+
+Interessado ..> Lance : <<uses>>
+
+Lote o--> "*" Interessado
+Lote --> RegraComissao
+Lote --> "0..1" Lance
+Lance --> Participante
+
+Main ..> Lote : <<uses>>
+Main ..> Lance : <<creates>>
+Main ..> ItemFatura : <<uses>>
+Main ..> VendaLote : <<creates>>
+Main ..> ServicoDecorator : <<creates>>
+Main ..> AcertoVendedor : <<uses>>
+Main ..> Participante : <<creates>>
+Main ..> PainelLeiloeiro : <<creates>>
+Main ..> AuditorLeilao : <<creates>>
+Main ..> RegraComissao : <<uses>>
+
+@enduml
