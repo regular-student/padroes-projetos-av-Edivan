@@ -154,36 +154,36 @@ AzureArmazenamento ..|> Armazenamento
 AwsFila ..|> Fila
 AzureFila ..|> Fila
 
-ProvedorNuvemFactory ..> MaquinaVirtual : <<uses>>
-ProvedorNuvemFactory ..> Armazenamento : <<uses>>
-ProvedorNuvemFactory ..> Fila : <<uses>>
+ProvedorNuvemFactory ..> MaquinaVirtual
+ProvedorNuvemFactory ..> Armazenamento
+ProvedorNuvemFactory ..> Fila
 
-AwsFactory ..> AwsMaquinaVirtual : <<creates>>
-AwsFactory ..> AwsArmazenamento : <<creates>>
-AwsFactory ..> AwsFila : <<creates>>
+AwsFactory ..> AwsMaquinaVirtual
+AwsFactory ..> AwsArmazenamento
+AwsFactory ..> AwsFila
 
-AzureFactory ..> AzureMaquinaVirtual : <<creates>>
-AzureFactory ..> AzureArmazenamento : <<creates>>
-AzureFactory ..> AzureFila : <<creates>>
+AzureFactory ..> AzureMaquinaVirtual
+AzureFactory ..> AzureArmazenamento
+AzureFactory ..> AzureFila
 
-MontadorAmbiente --> ProvedorNuvemFactory
-MontadorAmbiente ..> SolicitacaoAmbiente : <<uses>>
-MontadorAmbiente ..> Ambiente : <<creates>>
-MontadorAmbiente ..> Configuracao : <<uses>>
-MontadorAmbiente ..> HistoricoAuditoria : <<uses>>
-MontadorAmbiente ..> RegistroAuditoria : <<creates>>
+MontadorAmbiente --> "1" ProvedorNuvemFactory
+MontadorAmbiente ..> SolicitacaoAmbiente
+MontadorAmbiente ..> Ambiente
+MontadorAmbiente ..> Configuracao
+MontadorAmbiente ..> HistoricoAuditoria
+MontadorAmbiente ..> RegistroAuditoria
 
 Ambiente --> "*" MaquinaVirtual
-Ambiente --> Armazenamento
-Ambiente --> Fila
+Ambiente --> "1" Armazenamento
+Ambiente --> "1" Fila
 
 HistoricoAuditoria --> "*" RegistroAuditoria
 
-Main ..> MontadorAmbiente : <<uses>>
-Main ..> SolicitacaoAmbiente : <<creates>>
-Main ..> AwsFactory : <<creates>>
-Main ..> AzureFactory : <<creates>>
-Main ..> ProvedorNuvemFactory : <<uses>>
-Main ..> HistoricoAuditoria : <<uses>>
+Main ..> MontadorAmbiente
+Main ..> SolicitacaoAmbiente
+Main ..> AwsFactory
+Main ..> AzureFactory
+Main ..> ProvedorNuvemFactory
+Main ..> HistoricoAuditoria
 
 @enduml
