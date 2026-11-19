@@ -154,24 +154,23 @@ CertificadoAutenticidadeDecorator --|> ServicoDecorator
 EmbalagemEspecialDecorator --|> ServicoDecorator
 EntregaExpressaDecorator --|> ServicoDecorator
 
-ServicoDecorator o--> ItemFatura
+ServicoDecorator o--> "1" ItemFatura
 
-Interessado ..> Lance : <<uses>>
+Interessado ..> Lance
 
 Lote o--> "*" Interessado
-Lote --> RegraComissao
+Lote --> "1" RegraComissao
 Lote --> "0..1" Lance
-Lance --> Participante
+Lance --> "1" Participante
 
-Main ..> Lote : <<uses>>
-Main ..> Lance : <<creates>>
-Main ..> ItemFatura : <<uses>>
-Main ..> VendaLote : <<creates>>
-Main ..> ServicoDecorator : <<creates>>
-Main ..> AcertoVendedor : <<uses>>
-Main ..> Participante : <<creates>>
-Main ..> PainelLeiloeiro : <<creates>>
-Main ..> AuditorLeilao : <<creates>>
-Main ..> RegraComissao : <<uses>>
+Main ..> Lote
+Main ..> Lance
+Main ..> ItemFatura
+Main ..> VendaLote
+Main ..> AcertoVendedor
+Main ..> Participante
+Main ..> PainelLeiloeiro
+Main ..> AuditorLeilao
+Main ..> RegraComissao
 
 @enduml
